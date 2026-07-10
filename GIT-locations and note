@@ -1,0 +1,24 @@
+https://github.com/OOsemka/trusted-advisor/tree/main/Distributed-architecture
+
+An Operator in OpenShift is a Kubernetes application that automates the installation, configuration, upgrades, scaling, backup, recovery, and day-2 operations of another application.
+Cluster Operators → Installed by default (etcd, ingress, authentication, network, monitoring...)
+Platform Operators → Installed from OperatorHub (ODF, GitOps, ACM, ACS, Quay...)
+Custom Operators → Developed by organizations for their own applications.
+
+Deployments manage Pods. Operators manage the entire application lifecycle.
+
+### 1. Cluster Operator (Built-in)
+
+When OpenShift is installed, it automatically installs all the required **Cluster Operators**. These Operators register the necessary **CRDs**, allowing Kubernetes to understand OpenShift-specific resources such as `IngressController`, `DNS`, and `OAuth`. When an administrator creates or modifies one of these resources, the corresponding Cluster Operator watches it, creates or updates the required platform components, and continuously reconciles the cluster to keep it in the desired state.
+
+---
+
+### 2. Platform/Application Operator (ODF, GitOps, Quay, ACM, etc.)
+
+When a Platform Operator is installed from OperatorHub, it first installs its **CRDs**, which extend the Kubernetes API with new resource types such as `StorageCluster`, `ArgoCD`, or `QuayRegistry`. An administrator then creates a **Custom Resource (CR)** based on that CRD. The Operator watches the CR and automatically creates and manages all the required Kubernetes resources, such as Pods, StatefulSets, PVCs, Services, Secrets, and ConfigMaps. It continuously monitors the application and reconciles any drift from the desired state.
+
+---
+
+### 3. Custom Operator
+
+A Custom Operator is developed by an organization to automate the lifecycle of its own application. After the Operator is installed, it registers a **custom CRD**, introducing a new API resource such as `KafkaCluster`, `OracleDatabase`, or `MyApplication`. The application team creates a **Custom Resource (CR)** describing the desired configuration. The Custom Operator watches this CR, provisions all the necessary Kubernetes resources, and continuously ensures that the application remains in the desired state by handling scaling, recovery, upgrades, and configuration changes automatically.
