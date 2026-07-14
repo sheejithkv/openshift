@@ -1,5 +1,16 @@
 # Disconnected UPI — Quick Reference
 
+| Area                    | UPI                                      | Agent-based                                   |
+| ----------------------- | ---------------------------------------- | --------------------------------------------- |
+| Node boot               | Manually attach different Ignition files | Boot all nodes using the generated ISO        |
+| Host discovery          | Manually identify and configure nodes    | Agents automatically discover hardware        |
+| Validation              | You manually detect mistakes             | Performs pre-installation validations         |
+| Installation tracking   | Check bootstrap and node logs separately | Centralized installation progress             |
+| Bare-metal provisioning | More scripting and coordination          | ISO-based deployment is simpler               |
+| Disconnected design     | Supported, but operationally complex     | Specifically designed for restricted networks |
+
+
+
 ## Prep (before any node boots)
 
 | Stage | File | Action |
