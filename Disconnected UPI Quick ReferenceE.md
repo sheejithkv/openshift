@@ -1,13 +1,19 @@
 # Disconnected UPI — Quick Reference
 
-| Area                    | UPI                                      | Agent-based                                   |
-| ----------------------- | ---------------------------------------- | --------------------------------------------- |
-| Node boot               | Manually attach different Ignition files | Boot all nodes using the generated ISO        |
-| Host discovery          | Manually identify and configure nodes    | Agents automatically discover hardware        |
-| Validation              | You manually detect mistakes             | Performs pre-installation validations         |
-| Installation tracking   | Check bootstrap and node logs separately | Centralized installation progress             |
-| Bare-metal provisioning | More scripting and coordination          | ISO-based deployment is simpler               |
-| Disconnected design     | Supported, but operationally complex     | Specifically designed for restricted networks |
+| Area                      | UPI                                                      | IPI                                                    | Agent-based                                                    |
+| ------------------------- | -------------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------- |
+| Simple meaning            | You build the infrastructure; installer builds OpenShift | Installer builds infrastructure and OpenShift          | You build the infrastructure; ISO discovers and installs nodes |
+| Node boot                 | Manually boot nodes with Ignition files                  | Installer creates and boots nodes automatically        | Boot nodes using one generated ISO                             |
+| Host discovery            | Manual                                                   | Automatic through platform or BMC integration          | Agents automatically discover servers                          |
+| Infrastructure creation   | Manual                                                   | Automatic on supported platforms                       | Manual                                                         |
+| Validation                | Mostly manual                                            | Installer validates platform configuration             | Detailed hardware, network and configuration checks            |
+| Installation tracking     | Check bootstrap and node logs manually                   | Installer tracks the complete deployment               | Centralized host and installation progress                     |
+| Bare-metal provisioning   | Requires scripts, PXE, virtual media or manual booting   | Uses BMC, Ironic and Metal3                            | Uses bootable ISO; no separate provisioning service required   |
+| DNS and load balancer     | You configure them                                       | Installer configures them where supported              | You configure them                                             |
+| Disconnected installation | Supported, but more manual work                          | Supported, but needs platform and mirror integration   | Usually simpler for disconnected bare-metal environments       |
+| Best use                  | Maximum control and custom infrastructure                | Maximum automation on a supported platform             | Simplified bare-metal and disconnected installation            |
+| Main disadvantage         | Highest manual effort                                    | Requires supported infrastructure APIs and permissions | Does not create external infrastructure automatically          |
+
 
 
 
