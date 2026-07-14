@@ -95,3 +95,17 @@ Each layer rides on the one above it.
 **keepalived** keeps the door alive → **HAProxy / router pod** picks a healthy destination → **kube-proxy** hides pod churn behind a stable Service IP → **OVN-K8s → OVN → OVS** builds the virtual network pods live on → **Geneve** carries their traffic over the real LAN → **Multus** ensures every pod has the right cables → **CoreDNS** lets everyone find each other by name.
 
 Each piece exists to solve a problem the layer below couldn't.
+
+
+| Aspect | UPI | IPI (baremetal) | Agent-based (this repo) |
+|---|---|---|---|
+| Who provisions nodes | You, entirely manually (PXE/ISO/your own tooling) | Installer, via Ironic/Metal3 + BMC (IPMI/Redfish) | You attach one ISO; BMC automation optional |
+| Extra infra needed | None beyond your own | A discrete provisioner node (needs nested virt — it runs libvirt to host the bootstrap VM) | None — no provisioner node at all |
+| Provisioning network | Not required | Required, separate non-routable network; provisioner supplies its own DHCP/TFTP on it | Not required |
+| Bootstrap mechanism | Separate bootstrap VM/machine — you create it and destroy it yourself | Separate bootstrap VM — installer creates and destroys it automatically | No separate machine — one target node (rendezvous host) plays bootstrap in-place, then reboots to join |
+| Config generation | `create manifests` → `create ignition-configs`, you deliver them yourself | `install-config.yaml` with `platform.baremetal.hosts[]` (BMC creds) | `install-config.yaml` + `agent-config.yaml` → `agent create image` (one ISO) |
+| DNS you must create | `api`, `api-int`, `*.apps`, + etcd SRV/A records | `api`, `*.apps` (`api-int` handled internally) | `api`, `*.apps` (`api-int` handled internally) |
+| DHCP | Entirely your responsibility | Required on the provisioning network | Not required if static IPs are in `agent-config.yaml` |
+| Load balancer | You stand up your own (HAProxy) | Automatic — keepalived + haproxy static pods | Automatic — same mechanism, if `platform: baremetal` |
+| Command flow | `create manifests` → `create ignition-configs` → manual boot → `wait-for bootstrap-complete` → `wait-for install-complete` | `create cluster` (one command drives it all) | `agent create image` → boot ISO → `wait-for bootstrap-complete` → `wait-for install-complete` |
+| Best for | Maximum customization, unusual topologies, integrating existing infra | Lab/datacenter with BMC access and appetite for a provisioner host | Disconnected, no spare provisioner node — why this repo uses it |
