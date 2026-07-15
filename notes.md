@@ -77,8 +77,7 @@ reload haproxy
 | API access | External VIP for cluster admin | api-int VIP :6443 | keepalived + HAProxy on masters | `oc` / `kubectl` → kube-apiserver |
 
 Each layer rides on the one above it.
-
-Each layer rides on the one above it. 
+## Ingress Controller watches Routes, and routes traffic according to the request (hostname/path in the request)
 
 ## Networking cast — think of, and *why we need it*
 
