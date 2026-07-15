@@ -65,13 +65,18 @@ reload haproxy
  
 ## OpenShift network layers
 
+## OpenShift network layers
+
 | Layer | What it is | CIDR (your cluster) | Who facilitates it | Purpose |
 |---|---|---|---|---|
-| **Node network** | Real IPs on the LAN | 192.168.0.0/24 | OS + `br-ex` OVS bridge | Node-to-node, kubelet ↔ API |
-| **Pod network** | Virtual IPs for pods | 10.128.0.0/14 | OVN-Kubernetes + Multus + Geneve tunnels | Pod-to-pod across nodes |
-| **Service network** | Stable ClusterIPs | 172.30.0.0/16 | kube-proxy / OVN load balancers | Fixed IP for a group of pods |
-| **Ingress (apps)** | External VIP for app traffic | 192.168.0.7 | keepalived + router pod (HAProxy) | Outside world → app1 |
-| **API access** | External VIP for cluster admin | api-int VIP :6443 | keepalived + HAProxy on masters | `oc` / `kubectl` → kube-apiserver |
+| Node network | Real IPs on the LAN | 192.168.0.0/24 | OS + `br-ex` OVS bridge | Node-to-node, kubelet ↔ API |
+| Pod network | Virtual IPs for pods | 10.128.0.0/14 | OVN-Kubernetes + Multus + Geneve tunnels | Pod-to-pod across nodes |
+| Service network | Stable ClusterIPs | 172.30.0.0/16 | kube-proxy / OVN load balancers | Fixed IP for a group of pods |
+| Route | Hostname-to-Service mapping (L7) | N/A (no CIDR) | HAProxy router pod (reads Route objects) | Maps external hostname/path → Service; handles TLS edge/passthrough/reencrypt |
+| Ingress (apps) | External VIP for app traffic | 192.168.0.7 | keepalived + router pod (HAProxy) | Outside world → app1 |
+| API access | External VIP for cluster admin | api-int VIP :6443 | keepalived + HAProxy on masters | `oc` / `kubectl` → kube-apiserver |
+
+Each layer rides on the one above it.
 
 Each layer rides on the one above it. 
 
